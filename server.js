@@ -4,6 +4,8 @@ const sqlite3 = require('sqlite3');
 
 const http = require('http');
 const app = express();
+
+//making database
 let db = new sqlite3.Database("./file.db", sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
         console.log(err);
@@ -18,8 +20,6 @@ app.set('view engine', 'mustache');
 app.engine('mustache', mustache());
 
 
-// db.run('CREATE TABLE messageHistory (message TEXT);');
-// db.run("INSERT INTO messageHistory VALUES ('Nothin much!');")
 
 
 
@@ -56,12 +56,11 @@ app.get("/", (req, res) => {
 io.on('connection', (socket) => {
     console.log('a user connected');
     db.all("SELECT message FROM messageHistory", (err, answer) => {
-    for (let i = 0; i < answer.length; i++) {
-        console.log(answer[i].message);
-        io.emit('chat message', answer[i].message);
+        for (let i = 0; i < answer.length; i++) {
+            io.emit('chat message', answer[i].message);
 
-    }
-});
+        }
+    });
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });

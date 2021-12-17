@@ -1,20 +1,46 @@
-/*div {
-	width: 100%;
-	height: 90%;
-	background-color: blue;
+* {
+	font-family: tahoma;
 }
-*/
+body {
+	background: lightcyan;
+}
+h1 {
+	font-size: 50px;
+		margin: 20px; 
+	
+}
+#scroll {
+	height: 70%;
+	width: 1000px;
+	overflow-x: auto;
+	background: forestgreen;
+	display: flex;
+	flex-direction: column-reverse;
+		margin: 20px; 
+
+}
+
 #messages { 
-	list-style-type: none; 
-	margin: 0; 
-	padding: 0;
+  padding: 10px;
+	font-family: tahoma;
+		font-size: 30px;
  }
 
 
 #chatInput {
-	position: fixed;
+	position: block;
+	width: 650;
+	height: 50px;
+	margin-left: 20px;
+	font-size: 20px;
+	padding-left:10px;
 }
 
 #chatbut {
-	position: inline;
+	font-size: 20px;
+	
+	position: block;
+	width: 150;
+		height: 50px;
+
 }
