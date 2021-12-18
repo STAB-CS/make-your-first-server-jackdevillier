@@ -1,3 +1,4 @@
+//server is localhost:8080 **********
 const express = require('express');
 const mustache = require('mustache-express');
 const sqlite3 = require('sqlite3');
@@ -14,6 +15,7 @@ let db = new sqlite3.Database("./file.db", sqlite3.OPEN_READWRITE, (err) => {
     }
 });
 
+//server setup
 app.use(express.static(__dirname + "/public"));
 app.set('views', __dirname + "/views");
 app.set('view engine', 'mustache');
@@ -23,7 +25,7 @@ app.engine('mustache', mustache());
 
 
 
-
+//server and socket setup
 const server = http.createServer(app);
 const {
     Server
@@ -53,8 +55,11 @@ app.get("/", (req, res) => {
     res.render('home');
 });
 
+//detects when a new user joins/leaves
 io.on('connection', (socket) => {
     console.log('a user connected');
+    //loads the database whenever someone new loads in
+    //(on second thought, I should have done this in client side...)
     db.all("SELECT message FROM messageHistory", (err, answer) => {
         for (let i = 0; i < answer.length; i++) {
             io.emit('chat message', answer[i].message);
@@ -66,33 +71,31 @@ io.on('connection', (socket) => {
     });
 });
 
-
+//list of all messages sent in one session
 let msgList = [];
-
-
-
-
 
 
 io.on('connection', (socket) => {
     socket.on('chat message', (msg) => {
+        //when theres a new message, gets sent to msgList
         msgList.push(msg + ' ');
         console.log(msgList);
 
         //puts msg into database
         db.run("INSERT INTO messageHistory VALUES (?);", msg);
-        //logs that msg as an item in the database "array"
+        //logs that msg as an item in the database
         db.all("SELECT message FROM messageHistory", (err, answer) => {
             if (err)
                 console.log(err);
 
             console.log(answer[0].message);
         });
-
+        //tells client side to display chat message on screen
         io.emit('chat message', msg);
     });
 });
 
+//localhost:8080
 server.listen(8080, () => {
     console.log("we have liftoff");
 });
